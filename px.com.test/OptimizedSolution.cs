@@ -40,11 +40,12 @@ public class OptimizedSolution
     // если остались лиды
     private static List<Client> MapVendorsToClients(List<Client> clients, List<Vendor> vendors)
     {
-        // Создаем очереди только для вендоров.
+        // Создаем стэк только для вендоров. Переделал на стэк, чтобы быстрее избавлять от вендоров, у которых закончились лиды.
         var vendorStack = new Stack<Vendor>(vendors);
 
         foreach (var client in clients)
         {
+            // Проверяю, есть ли у клиента бюджет, иначе нет смысла идти дальше
             if (client.Budget <= 0)
                 continue;
 
@@ -52,6 +53,7 @@ public class OptimizedSolution
             {
                 var vendor = vendorStack.Pop();
 
+                // Проверяю, есть ли у Вендора лиды, иначе нет смысла идти дальше
                 if (vendor.Leads <= 0)
                     continue;
 
@@ -62,6 +64,7 @@ public class OptimizedSolution
 
                 client.VendorNames.Add(vendor.Name);
 
+                // Если у вендора еще остались лиды, а клиент уже возсопльзовал все деньги, то возвращаем вендора обратно в стэк
                 if (vendor.Leads > 0)
                     vendorStack.Push(vendor);
                 
