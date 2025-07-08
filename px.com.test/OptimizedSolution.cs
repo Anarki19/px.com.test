@@ -45,11 +45,7 @@ public class OptimizedSolution
 
         foreach (var client in clients)
         {
-            // Проверяю, есть ли у клиента бюджет, иначе нет смысла идти дальше
-            if (client.Budget <= 0)
-                continue;
-
-            do
+            while (client.Budget > 0 && vendorStack.Count > 0)
             {
                 var vendor = vendorStack.Pop();
 
@@ -67,9 +63,7 @@ public class OptimizedSolution
                 // Если у вендора еще остались лиды, а клиент уже возсопльзовал все деньги, то возвращаем вендора обратно в стэк
                 if (vendor.Leads > 0)
                     vendorStack.Push(vendor);
-                
-                
-            } while (client.Budget > 0 && vendorStack.Count > 0);
+            }
         }
 
         return clients;
