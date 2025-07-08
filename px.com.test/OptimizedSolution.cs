@@ -1,4 +1,7 @@
-﻿namespace px.com.test;
+﻿using System;
+using System.Collections.Generic;
+
+namespace px.com.test;
 
 public class OptimizedSolution
 {
@@ -7,13 +10,14 @@ public class OptimizedSolution
         public string Name { get; set; }
         public int Leads { get; set; }
     }
+
     public class Client
     {
         public string Name { get; set; }
         public int Budget { get; set; }
         public List<string> VendorNames { get; set; } = [];
     }
-    
+
     public void Execute()
     {
         var vendors = new List<Vendor>
@@ -28,7 +32,7 @@ public class OptimizedSolution
             new() { Name = "Client 1", Budget = 50, },
             new() { Name = "Client 2", Budget = 50, }
         };
-        
+
         MapVendorsToClients(clients, vendors);
     }
 
@@ -38,26 +42,30 @@ public class OptimizedSolution
     {
         // Создаем очереди только для вендоров.
         var vendorStack = new Stack<Vendor>(vendors);
-        
+
         foreach (var client in clients)
         {
-            if(client.Budget <= 0)
+            if (client.Budget <= 0)
                 continue;
 
             do
             {
                 var vendor = vendorStack.Pop();
+
+                if (vendor.Leads <= 0)
+                    continue;
+
                 var resourcesToAllocate = Math.Min(client.Budget, vendor.Leads);
 
                 client.Budget -= resourcesToAllocate;
                 vendor.Leads -= resourcesToAllocate;
-                
+
                 client.VendorNames.Add(vendor.Name);
-                
-                if(vendor.Leads > 0)
+
+                if (vendor.Leads > 0)
                     vendorStack.Push(vendor);
-
-
+                
+                
             } while (client.Budget > 0 && vendorStack.Count > 0);
         }
 
